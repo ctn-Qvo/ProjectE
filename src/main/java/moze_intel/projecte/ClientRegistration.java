@@ -71,7 +71,9 @@ public class ClientRegistration {
 			registerScreen(PEContainerTypes.ALCH_CHEST_CONTAINER, AlchChestScreen::new);
 			registerScreen(PEContainerTypes.ALCH_BAG_CONTAINER, AlchBagScreen::new);
 			registerScreen(PEContainerTypes.ETERNAL_DENSITY_CONTAINER, GUIEternalDensity::new);
-			registerScreen(PEContainerTypes.TRANSMUTATION_CONTAINER, GUITransmutation::new);
+			if (PEContainerTypes.TRANSMUTATION_CONTAINER != null) {
+				registerScreen(PEContainerTypes.TRANSMUTATION_CONTAINER, GUITransmutation::new);
+			}
 			registerScreen(PEContainerTypes.RELAY_MK1_CONTAINER, GUIRelayMK1::new);
 			registerScreen(PEContainerTypes.RELAY_MK2_CONTAINER, GUIRelayMK2::new);
 			registerScreen(PEContainerTypes.RELAY_MK3_CONTAINER, GUIRelayMK3::new);
@@ -85,13 +87,9 @@ public class ClientRegistration {
 	@SubscribeEvent
 	public static void clientSetup(FMLClientSetupEvent evt) {
 		if (ModList.get().isLoaded("jei")) {
-			//Note: This listener is only registered if JEI is loaded
 			MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, (ScreenEvent.Opening event) -> {
 				if (event.getCurrentScreen() instanceof PEContainerScreen<?> screen) {
-					//If JEI is loaded and our current screen is a mekanism gui,
-					// check if the new screen is a JEI recipe screen
 					if (event.getNewScreen() instanceof IRecipesGui) {
-						//If it is mark on our current screen that we are switching to JEI
 						screen.switchingToJEI = true;
 					}
 				}
@@ -99,7 +97,6 @@ public class ClientRegistration {
 		}
 
 		evt.enqueueWork(() -> {
-			//Property Overrides
 			addPropertyOverrides(ACTIVE_OVERRIDE, (stack, level, entity, seed) -> ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE) ? 1F : 0F,
 					PEItems.GEM_OF_ETERNAL_DENSITY, PEItems.VOID_RING, PEItems.ARCANA_RING, PEItems.ARCHANGEL_SMITE, PEItems.BLACK_HOLE_BAND, PEItems.BODY_STONE,
 					PEItems.HARVEST_GODDESS_BAND, PEItems.IGNITION_RING, PEItems.LIFE_STONE, PEItems.MIND_STONE, PEItems.SOUL_STONE, PEItems.WATCH_OF_FLOWING_TIME,
@@ -121,13 +118,11 @@ public class ClientRegistration {
 
 	@SubscribeEvent
 	public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-		//Block Entity
 		event.registerBlockEntityRenderer(PEBlockEntityTypes.ALCHEMICAL_CHEST.get(), context -> new ChestRenderer(context, PECore.rl("textures/block/alchemical_chest.png"), () -> PEBlocks.ALCHEMICAL_CHEST));
 		event.registerBlockEntityRenderer(PEBlockEntityTypes.CONDENSER.get(), context -> new ChestRenderer(context, PECore.rl("textures/block/condenser_mk1.png"), () -> PEBlocks.CONDENSER));
 		event.registerBlockEntityRenderer(PEBlockEntityTypes.CONDENSER_MK2.get(), context -> new ChestRenderer(context, PECore.rl("textures/block/condenser_mk2.png"), () -> PEBlocks.CONDENSER_MK2));
 		event.registerBlockEntityRenderer(PEBlockEntityTypes.DARK_MATTER_PEDESTAL.get(), PedestalRenderer::new);
 
-		//Entities
 		event.registerEntityRenderer(PEEntityTypes.WATER_PROJECTILE.get(), context -> new EntitySpriteRenderer<>(context, PECore.rl("textures/entity/water_orb.png")));
 		event.registerEntityRenderer(PEEntityTypes.LAVA_PROJECTILE.get(), context -> new EntitySpriteRenderer<>(context, PECore.rl("textures/entity/lava_orb.png")));
 		event.registerEntityRenderer(PEEntityTypes.MOB_RANDOMIZER.get(), context -> new EntitySpriteRenderer<>(context, PECore.rl("textures/entity/randomizer.png")));
@@ -157,7 +152,7 @@ public class ClientRegistration {
 
 	private static <C extends AbstractContainerMenu, U extends Screen & MenuAccess<C>> void registerScreen(ContainerTypeRegistryObject<C> type, ScreenConstructor<C, U> factory) {
 		if (type == null) {
-			return; // 容器被禁用，跳过注册，避免 NPE
+			return;
 		}
 		MenuScreens.register(type.get(), factory);
 	}
