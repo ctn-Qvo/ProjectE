@@ -3,31 +3,6 @@ name: Manual Build (ProjectE)
 on:
   workflow_dispatch:
     inputs:
-      branch:
-        type: choice
-        description: 选择分支
-        options:
-          - MC17
-          - MC18
-          - MC19
-          - graphviz
-          - master
-          - mc1.10.x
-          - mc1.11.x
-          - mc1.12.x
-          - mc1.13.x
-          - mc1.14.x
-          - mc1.15.x
-          - mc1.16.x
-          - mc1.18.x
-          - mc1.19.x
-          - mc1.20.4
-          - mc1.20.x
-          - mc1.21.1
-          - merceye
-          - modechargecap
-          - patchouli_book
-        default: mc1.21.1
       build_name:
         description: 自定义构建名称
         required: false
@@ -38,19 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 检出分支
+      - name: 检出代码
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.branch }}
-          fetch-depth: 0
-
-      - name: 验证分支是否存在
-        run: |
-          if ! git show-ref --verify --quiet refs/heads/${{ github.event.inputs.branch }} && ! git show-ref --verify --quiet refs/remotes/origin/${{ github.event.inputs.branch }}; then
-            echo "错误：分支 '${{ github.event.inputs.branch }}' 不存在！"
-            exit 1
-          fi
-          echo "已切换到分支：${{ github.event.inputs.branch }}"
 
       - name: 设置 JDK 17
         uses: actions/setup-java@v4
@@ -77,5 +41,5 @@ jobs:
       - name: 上传构建产物
         uses: actions/upload-artifact@v4
         with:
-          name: ProjectE-Build-${{ github.event.inputs.branch }}${{ github.event.inputs.build_name && format('-{0}', github.event.inputs.build_name) || '' }}
+          name: ProjectE-Build-${{ github.ref_name }}${{ github.event.inputs.build_name && format('-{0}', github.event.inputs.build_name) || '' }}
           path: build/libs/*.jar
