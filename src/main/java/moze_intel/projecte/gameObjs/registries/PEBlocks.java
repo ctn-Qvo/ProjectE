@@ -60,7 +60,7 @@ public class PEBlocks {
 	public static final WallOrFloorBlockRegistryObject<InterdictionTorch, InterdictionTorchWall, StandingAndWallBlockItem> INTERDICTION_TORCH = BLOCKS.registerWallOrFloorItem("interdiction_torch", InterdictionTorch::new, InterdictionTorchWall::new, BlockBehaviour.Properties.of().pushReaction(PushReaction.DESTROY).noCollission().instabreak().strength(0).lightLevel(state -> 14).randomTicks());
 	public static final BlockRegistryObject<ProjectETNT, BlockItem> NOVA_CATALYST = registerExplosive("nova_catalyst", EntityNovaCatalystPrimed::new);
 	public static final BlockRegistryObject<ProjectETNT, BlockItem> NOVA_CATACLYSM = registerExplosive("nova_cataclysm", EntityNovaCataclysmPrimed::new);
-	public static final BlockRegistryObject<TransmutationStone, BlockItem> TRANSMUTATION_TABLE = BLOCKS.register("transmutation_table", () -> new TransmutationStone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(10, 30)));
+    public static final BlockRegistryObject<TransmutationStone, BlockItem> TRANSMUTATION_TABLE = null;
 	public static final BlockRegistryObject<Relay, RelayItem> RELAY = registerRelay("relay_mk1", EnumRelayTier.MK1, state -> 7);
 	public static final BlockRegistryObject<Relay, RelayItem> RELAY_MK2 = registerRelay("relay_mk2", EnumRelayTier.MK2, state -> 11);
 	public static final BlockRegistryObject<Relay, RelayItem> RELAY_MK3 = registerRelay("relay_mk3", EnumRelayTier.MK3, state -> 15);
