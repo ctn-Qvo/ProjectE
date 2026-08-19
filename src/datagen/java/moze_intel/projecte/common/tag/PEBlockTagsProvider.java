@@ -3,6 +3,7 @@ package moze_intel.projecte.common.tag;
 import java.util.concurrent.CompletableFuture;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
+import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -38,23 +39,10 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 		);
 		tag(PETags.Blocks.BLACKLIST_TIME_WATCH);
 		//Vanilla/Forge Tags
-		tag(Tags.Blocks.CHESTS).add(
-				PEBlocks.ALCHEMICAL_CHEST.getBlock()
-		);
-		tag(BlockTags.BEACON_BASE_BLOCKS).add(
-				PEBlocks.DARK_MATTER.getBlock(),
-				PEBlocks.RED_MATTER.getBlock()
-		);
-		tag(BlockTags.GUARDED_BY_PIGLINS).add(
-				PEBlocks.ALCHEMICAL_CHEST.getBlock(),
-				PEBlocks.CONDENSER.getBlock(),
-				PEBlocks.CONDENSER_MK2.getBlock()
-		);
-		tag(BlockTags.INFINIBURN_OVERWORLD).add(
-				PEBlocks.ALCHEMICAL_COAL.getBlock(),
-				PEBlocks.MOBIUS_FUEL.getBlock(),
-				PEBlocks.AETERNALIS_FUEL.getBlock()
-		);
+		addBlocks(Tags.Blocks.CHESTS, PEBlocks.ALCHEMICAL_CHEST);
+		addBlocks(BlockTags.BEACON_BASE_BLOCKS, PEBlocks.DARK_MATTER, PEBlocks.RED_MATTER);
+		addBlocks(BlockTags.GUARDED_BY_PIGLINS, PEBlocks.ALCHEMICAL_CHEST, PEBlocks.CONDENSER, PEBlocks.CONDENSER_MK2);
+		addBlocks(BlockTags.INFINIBURN_OVERWORLD, PEBlocks.ALCHEMICAL_COAL, PEBlocks.MOBIUS_FUEL, PEBlocks.AETERNALIS_FUEL);
 		addImmuneBlocks(BlockTags.DRAGON_IMMUNE);
 		addImmuneBlocks(BlockTags.WITHER_IMMUNE);
 
@@ -62,35 +50,28 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 		tag(PETags.Blocks.MINEABLE_WITH_KATAR);
 		tag(PETags.Blocks.MINEABLE_WITH_MORNING_STAR);
 
-		tag(PETags.Blocks.NEEDS_DARK_MATTER_TOOL).add(
-				PEBlocks.DARK_MATTER.getBlock(),
-				PEBlocks.DARK_MATTER_FURNACE.getBlock(),
-				PEBlocks.DARK_MATTER_PEDESTAL.getBlock()
-		);
-		tag(PETags.Blocks.NEEDS_RED_MATTER_TOOL).add(
-				PEBlocks.RED_MATTER.getBlock(),
-				PEBlocks.RED_MATTER_FURNACE.getBlock()
-		);
+		addBlocks(PETags.Blocks.NEEDS_DARK_MATTER_TOOL, PEBlocks.DARK_MATTER, PEBlocks.DARK_MATTER_FURNACE, PEBlocks.DARK_MATTER_PEDESTAL);
+		addBlocks(PETags.Blocks.NEEDS_RED_MATTER_TOOL, PEBlocks.RED_MATTER, PEBlocks.RED_MATTER_FURNACE);
 
-		tag(BlockTags.MINEABLE_WITH_PICKAXE).add(
-				PEBlocks.ALCHEMICAL_CHEST.getBlock(),
-				PEBlocks.ALCHEMICAL_COAL.getBlock(),
-				PEBlocks.MOBIUS_FUEL.getBlock(),
-				PEBlocks.AETERNALIS_FUEL.getBlock(),
-				PEBlocks.COLLECTOR.getBlock(),
-				PEBlocks.COLLECTOR_MK2.getBlock(),
-				PEBlocks.COLLECTOR_MK3.getBlock(),
-				PEBlocks.CONDENSER.getBlock(),
-				PEBlocks.CONDENSER_MK2.getBlock(),
-				PEBlocks.DARK_MATTER_PEDESTAL.getBlock(),
-				PEBlocks.DARK_MATTER_FURNACE.getBlock(),
-				PEBlocks.RED_MATTER_FURNACE.getBlock(),
-				PEBlocks.DARK_MATTER.getBlock(),
-				PEBlocks.RED_MATTER.getBlock(),
-				PEBlocks.TRANSMUTATION_TABLE.getBlock(),
-				PEBlocks.RELAY.getBlock(),
-				PEBlocks.RELAY_MK2.getBlock(),
-				PEBlocks.RELAY_MK3.getBlock()
+		addBlocks(BlockTags.MINEABLE_WITH_PICKAXE,
+				PEBlocks.ALCHEMICAL_CHEST,
+				PEBlocks.ALCHEMICAL_COAL,
+				PEBlocks.MOBIUS_FUEL,
+				PEBlocks.AETERNALIS_FUEL,
+				PEBlocks.COLLECTOR,
+				PEBlocks.COLLECTOR_MK2,
+				PEBlocks.COLLECTOR_MK3,
+				PEBlocks.CONDENSER,
+				PEBlocks.CONDENSER_MK2,
+				PEBlocks.DARK_MATTER_PEDESTAL,
+				PEBlocks.DARK_MATTER_FURNACE,
+				PEBlocks.RED_MATTER_FURNACE,
+				PEBlocks.DARK_MATTER,
+				PEBlocks.RED_MATTER,
+				PEBlocks.TRANSMUTATION_TABLE,
+				PEBlocks.RELAY,
+				PEBlocks.RELAY_MK2,
+				PEBlocks.RELAY_MK3
 		);
 
 		//MINEABLE_WITH_PE_SHEARS
@@ -121,17 +102,25 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 				BlockTags.MINEABLE_WITH_SHOVEL
 		);
 
-		tag(BlockTags.WALL_POST_OVERRIDE).add(PEBlocks.INTERDICTION_TORCH.getBlock());
+		addBlocks(BlockTags.WALL_POST_OVERRIDE, PEBlocks.INTERDICTION_TORCH);
 	}
 
-	private void addImmuneBlocks(TagKey<Block> tag) {
-		tag(tag).add(
-				PEBlocks.DARK_MATTER.getBlock(),
-				PEBlocks.DARK_MATTER_FURNACE.getBlock(),
-				PEBlocks.DARK_MATTER_PEDESTAL.getBlock(),
-				PEBlocks.RED_MATTER.getBlock(),
-				PEBlocks.RED_MATTER_FURNACE.getBlock(),
-				PEBlocks.CONDENSER_MK2.getBlock()
+	private void addBlocks(TagKey<Block> tagKey, BlockRegistryObject<?, ?>... blockRegs) {
+		for (BlockRegistryObject<?, ?> blockReg : blockRegs) {
+			if (blockReg != null) {
+				tag(tagKey).add(blockReg.getBlock());
+			}
+		}
+	}
+
+	private void addImmuneBlocks(TagKey<Block> tagKey) {
+		addBlocks(tagKey,
+				PEBlocks.DARK_MATTER,
+				PEBlocks.DARK_MATTER_FURNACE,
+				PEBlocks.DARK_MATTER_PEDESTAL,
+				PEBlocks.RED_MATTER,
+				PEBlocks.RED_MATTER_FURNACE,
+				PEBlocks.CONDENSER_MK2
 		);
 	}
 }
