@@ -1,25 +1,22 @@
 package moze_intel.projecte.common.tag;
 
+import java.util.concurrent.CompletableFuture;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
+import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
-import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.BlockTagsProvider;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.concurrent.CompletableFuture;
-
-@SuppressWarnings("unchecked")
 public class PEBlockTagsProvider extends BlockTagsProvider {
 
 	public PEBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
@@ -29,66 +26,23 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 	@Override
 	protected void addTags(@NotNull HolderLookup.Provider provider) {
 		tag(PETags.Blocks.FARMING_OVERRIDE).add(Blocks.PINK_PETALS);
-		IntrinsicTagAppender<Block> blacklistHarvest = tag(PETags.Blocks.BLACKLIST_HARVEST);
-		//Add blocks that sometimes return false from isValidBonemealTarget, but that we don't actually want to be broken
-		blacklistHarvest.add(
-				//If there is no neighboring nylium we don't want to cause the netherrack to be broken
+		tag(PETags.Blocks.BLACKLIST_HARVEST).add(
+				Blocks.GRASS_BLOCK,
+				Blocks.CRIMSON_NYLIUM,
 				Blocks.NETHERRACK,
-				//If it doesn't have air above it
-				Blocks.BAMBOO_SAPLING,
-				//If it doesn't have air below it
-				Blocks.ROOTED_DIRT,
-				//If it has a fluid above it
-				Blocks.AZALEA,
-				Blocks.FLOWERING_AZALEA,
-				//If it doesn't have air
-				Blocks.BIG_DRIPLEAF,
-				Blocks.BIG_DRIPLEAF_STEM
+				Blocks.MELON_STEM,
+				Blocks.PUMPKIN_STEM,
+				Blocks.WARPED_NYLIUM,
+				Blocks.SMALL_DRIPLEAF,
+				Blocks.MOSS_BLOCK,
+				Blocks.ROOTED_DIRT
 		);
-		IntrinsicTagAppender<Block> overridePlantable = tag(PETags.Blocks.OVERRIDE_PLANTABLE);
-		overridePlantable.addTags(
-				BlockTags.LEAVES,
-				//Note: All vanilla tall flowers are bonemealable, so will get handled before being used by this tag
-				// but if a mod adds a tall flower that doesn't inherit the class hierarchy, having this could be useful
-				BlockTags.FLOWERS,
-				Tags.Blocks.PUMPKINS_NORMAL
-		).add(
-				Blocks.MELON
-		);
-		for (Block block : BuiltInRegistries.BLOCK) {
-			if (WorldHelper.isPlantableImplementation(block)) {
-				overridePlantable.add(block);
-			}
-			if (WorldHelper.isUnharvestableImplementation(block)) {
-				blacklistHarvest.add(block);
-			}
-		}
 		tag(PETags.Blocks.BLACKLIST_TIME_WATCH);
-		tag(PETags.Blocks.VEIN_SHOVEL)
-				.add(Blocks.CLAY)
-				.addTag(Tags.Blocks.GRAVELS);
 		//Vanilla/Forge Tags
-		tag(Tags.Blocks.CHESTS).add(
-				PEBlocks.ALCHEMICAL_CHEST.getBlock()
-		);
-		tag(Tags.Blocks.PLAYER_WORKSTATIONS_FURNACES).add(
-				PEBlocks.DARK_MATTER_FURNACE.getBlock(),
-				PEBlocks.RED_MATTER_FURNACE.getBlock()
-		);
-		tag(BlockTags.BEACON_BASE_BLOCKS).add(
-				PEBlocks.DARK_MATTER.getBlock(),
-				PEBlocks.RED_MATTER.getBlock()
-		);
-		tag(BlockTags.GUARDED_BY_PIGLINS).add(
-				PEBlocks.ALCHEMICAL_CHEST.getBlock(),
-				PEBlocks.CONDENSER.getBlock(),
-				PEBlocks.CONDENSER_MK2.getBlock()
-		);
-		tag(BlockTags.INFINIBURN_OVERWORLD).add(
-				PEBlocks.ALCHEMICAL_COAL.getBlock(),
-				PEBlocks.MOBIUS_FUEL.getBlock(),
-				PEBlocks.AETERNALIS_FUEL.getBlock()
-		);
+		addBlocks(Tags.Blocks.CHESTS, PEBlocks.ALCHEMICAL_CHEST);
+		addBlocks(BlockTags.BEACON_BASE_BLOCKS, PEBlocks.DARK_MATTER, PEBlocks.RED_MATTER);
+		addBlocks(BlockTags.GUARDED_BY_PIGLINS, PEBlocks.ALCHEMICAL_CHEST, PEBlocks.CONDENSER, PEBlocks.CONDENSER_MK2);
+		addBlocks(BlockTags.INFINIBURN_OVERWORLD, PEBlocks.ALCHEMICAL_COAL, PEBlocks.MOBIUS_FUEL, PEBlocks.AETERNALIS_FUEL);
 		addImmuneBlocks(BlockTags.DRAGON_IMMUNE);
 		addImmuneBlocks(BlockTags.WITHER_IMMUNE);
 
@@ -96,43 +50,28 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 		tag(PETags.Blocks.MINEABLE_WITH_KATAR);
 		tag(PETags.Blocks.MINEABLE_WITH_MORNING_STAR);
 
-		tag(PETags.Blocks.NEEDS_DARK_MATTER_TOOL).add(
-				PEBlocks.DARK_MATTER.getBlock(),
-				PEBlocks.DARK_MATTER_FURNACE.getBlock(),
-				PEBlocks.DARK_MATTER_PEDESTAL.getBlock()
-		);
-		tag(PETags.Blocks.NEEDS_RED_MATTER_TOOL).add(
-				PEBlocks.RED_MATTER.getBlock(),
-				PEBlocks.RED_MATTER_FURNACE.getBlock()
-		);
-		tag(PETags.Blocks.INCORRECT_FOR_RED_MATTER_TOOL);
-		tag(PETags.Blocks.INCORRECT_FOR_DARK_MATTER_TOOL).addTags(PETags.Blocks.NEEDS_RED_MATTER_TOOL);
-		tag(BlockTags.INCORRECT_FOR_NETHERITE_TOOL).addTags(PETags.Blocks.NEEDS_DARK_MATTER_TOOL, PETags.Blocks.NEEDS_RED_MATTER_TOOL);
-		tag(BlockTags.INCORRECT_FOR_DIAMOND_TOOL).addTags(PETags.Blocks.NEEDS_DARK_MATTER_TOOL, PETags.Blocks.NEEDS_RED_MATTER_TOOL);
-		tag(BlockTags.INCORRECT_FOR_IRON_TOOL).addTags(PETags.Blocks.NEEDS_DARK_MATTER_TOOL, PETags.Blocks.NEEDS_RED_MATTER_TOOL);
-		tag(BlockTags.INCORRECT_FOR_STONE_TOOL).addTags(PETags.Blocks.NEEDS_DARK_MATTER_TOOL, PETags.Blocks.NEEDS_RED_MATTER_TOOL);
-		tag(BlockTags.INCORRECT_FOR_GOLD_TOOL).addTags(PETags.Blocks.NEEDS_DARK_MATTER_TOOL, PETags.Blocks.NEEDS_RED_MATTER_TOOL);
-		tag(BlockTags.INCORRECT_FOR_WOODEN_TOOL).addTags(PETags.Blocks.NEEDS_DARK_MATTER_TOOL, PETags.Blocks.NEEDS_RED_MATTER_TOOL);
+		addBlocks(PETags.Blocks.NEEDS_DARK_MATTER_TOOL, PEBlocks.DARK_MATTER, PEBlocks.DARK_MATTER_FURNACE, PEBlocks.DARK_MATTER_PEDESTAL);
+		addBlocks(PETags.Blocks.NEEDS_RED_MATTER_TOOL, PEBlocks.RED_MATTER, PEBlocks.RED_MATTER_FURNACE);
 
-		tag(BlockTags.MINEABLE_WITH_PICKAXE).add(
-				PEBlocks.ALCHEMICAL_CHEST.getBlock(),
-				PEBlocks.ALCHEMICAL_COAL.getBlock(),
-				PEBlocks.MOBIUS_FUEL.getBlock(),
-				PEBlocks.AETERNALIS_FUEL.getBlock(),
-				PEBlocks.COLLECTOR.getBlock(),
-				PEBlocks.COLLECTOR_MK2.getBlock(),
-				PEBlocks.COLLECTOR_MK3.getBlock(),
-				PEBlocks.CONDENSER.getBlock(),
-				PEBlocks.CONDENSER_MK2.getBlock(),
-				PEBlocks.DARK_MATTER_PEDESTAL.getBlock(),
-				PEBlocks.DARK_MATTER_FURNACE.getBlock(),
-				PEBlocks.RED_MATTER_FURNACE.getBlock(),
-				PEBlocks.DARK_MATTER.getBlock(),
-				PEBlocks.RED_MATTER.getBlock(),
-				PEBlocks.TRANSMUTATION_TABLE.getBlock(),
-				PEBlocks.RELAY.getBlock(),
-				PEBlocks.RELAY_MK2.getBlock(),
-				PEBlocks.RELAY_MK3.getBlock()
+		addBlocks(BlockTags.MINEABLE_WITH_PICKAXE,
+				PEBlocks.ALCHEMICAL_CHEST,
+				PEBlocks.ALCHEMICAL_COAL,
+				PEBlocks.MOBIUS_FUEL,
+				PEBlocks.AETERNALIS_FUEL,
+				PEBlocks.COLLECTOR,
+				PEBlocks.COLLECTOR_MK2,
+				PEBlocks.COLLECTOR_MK3,
+				PEBlocks.CONDENSER,
+				PEBlocks.CONDENSER_MK2,
+				PEBlocks.DARK_MATTER_PEDESTAL,
+				PEBlocks.DARK_MATTER_FURNACE,
+				PEBlocks.RED_MATTER_FURNACE,
+				PEBlocks.DARK_MATTER,
+				PEBlocks.RED_MATTER,
+				PEBlocks.TRANSMUTATION_TABLE,
+				PEBlocks.RELAY,
+				PEBlocks.RELAY_MK2,
+				PEBlocks.RELAY_MK3
 		);
 
 		//MINEABLE_WITH_PE_SHEARS
@@ -142,7 +81,9 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 		);
 		tag(PETags.Blocks.MINEABLE_WITH_PE_SHEARS).add(
 				//Blocks supported by vanilla shears
-				Blocks.COBWEB
+				Blocks.COBWEB,
+				Blocks.REDSTONE_WIRE,
+				Blocks.TRIPWIRE
 		);
 		tag(PETags.Blocks.MINEABLE_WITH_PE_SWORD).add(
 				//Blocks supported by vanilla swords
@@ -161,17 +102,25 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 				BlockTags.MINEABLE_WITH_SHOVEL
 		);
 
-		tag(BlockTags.WALL_POST_OVERRIDE).add(PEBlocks.INTERDICTION_TORCH.getBlock());
+		addBlocks(BlockTags.WALL_POST_OVERRIDE, PEBlocks.INTERDICTION_TORCH);
 	}
 
-	private void addImmuneBlocks(TagKey<Block> tag) {
-		tag(tag).add(
-				PEBlocks.DARK_MATTER.getBlock(),
-				PEBlocks.DARK_MATTER_FURNACE.getBlock(),
-				PEBlocks.DARK_MATTER_PEDESTAL.getBlock(),
-				PEBlocks.RED_MATTER.getBlock(),
-				PEBlocks.RED_MATTER_FURNACE.getBlock(),
-				PEBlocks.CONDENSER_MK2.getBlock()
+	private void addBlocks(TagKey<Block> tagKey, BlockRegistryObject<?, ?>... blockRegs) {
+		for (BlockRegistryObject<?, ?> blockReg : blockRegs) {
+			if (blockReg != null) {
+				tag(tagKey).add(blockReg.getBlock());
+			}
+		}
+	}
+
+	private void addImmuneBlocks(TagKey<Block> tagKey) {
+		addBlocks(tagKey,
+				PEBlocks.DARK_MATTER,
+				PEBlocks.DARK_MATTER_FURNACE,
+				PEBlocks.DARK_MATTER_PEDESTAL,
+				PEBlocks.RED_MATTER,
+				PEBlocks.RED_MATTER_FURNACE,
+				PEBlocks.CONDENSER_MK2
 		);
 	}
 }
