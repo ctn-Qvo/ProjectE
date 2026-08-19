@@ -155,7 +155,10 @@ public class ClientRegistration {
 		}
 	}
 
-	private static <C extends AbstractContainerMenu, U extends Screen & MenuAccess < C >> void registerScreen(ContainerTypeRegistryObject < C > type, ScreenConstructor < C, U > factory) {
+	private static <C extends AbstractContainerMenu, U extends Screen & MenuAccess<C>> void registerScreen(ContainerTypeRegistryObject<C> type, ScreenConstructor<C, U> factory) {
+		if (type == null) {
+			return; // 容器被禁用，跳过注册，避免 NPE
+		}
 		MenuScreens.register(type.get(), factory);
 	}
 }
