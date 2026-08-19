@@ -49,15 +49,24 @@ public class PEAdvancementsGenerator implements AdvancementGenerator {
 		Advancement root = childDisplay(parent, PEItems.PHILOSOPHERS_STONE, PELang.ADVANCEMENTS_PHILO_STONE, PELang.ADVANCEMENTS_PHILO_STONE_DESCRIPTION)
 				.addCriterion("philosophers_stone", InventoryChangeTrigger.TriggerInstance.hasItems(PEItems.PHILOSOPHERS_STONE))
 				.save(advancementConsumer, PECore.rl("philosophers_stone"), fileHelper);
-		//Branch 1
-		Advancement transmutationTable = childDisplay(root, PEBlocks.TRANSMUTATION_TABLE, PELang.ADVANCEMENTS_TRANSMUTATION_TABLE,
-				PELang.ADVANCEMENTS_TRANSMUTATION_TABLE_DESCRIPTION)
-				.addCriterion("trans_table", InventoryChangeTrigger.TriggerInstance.hasItems(PEBlocks.TRANSMUTATION_TABLE))
-				.save(advancementConsumer, PECore.rl("transmutation_table"), fileHelper);
-		childDisplay(transmutationTable, PEItems.TRANSMUTATION_TABLET, PELang.ADVANCEMENTS_TRANSMUTATION_TABLET, PELang.ADVANCEMENTS_TRANSMUTATION_TABLET_DESCRIPTION)
-				.addCriterion("trans_tablet", InventoryChangeTrigger.TriggerInstance.hasItems(PEItems.TRANSMUTATION_TABLET))
-				.save(advancementConsumer, PECore.rl("transmutation_tablet"), fileHelper);
-		//Branch 2
+
+		// 只有转化桌方块未禁用时才生成其进度
+		if (PEBlocks.TRANSMUTATION_TABLE != null) {
+			Advancement transmutationTable = childDisplay(root, PEBlocks.TRANSMUTATION_TABLE, PELang.ADVANCEMENTS_TRANSMUTATION_TABLE,
+					PELang.ADVANCEMENTS_TRANSMUTATION_TABLE_DESCRIPTION)
+					.addCriterion("trans_table", InventoryChangeTrigger.TriggerInstance.hasItems(PEBlocks.TRANSMUTATION_TABLE))
+					.save(advancementConsumer, PECore.rl("transmutation_table"), fileHelper);
+
+			// 只有便携式转化桌未禁用时才生成子进度
+			if (PEItems.TRANSMUTATION_TABLET != null) {
+				childDisplay(transmutationTable, PEItems.TRANSMUTATION_TABLET, PELang.ADVANCEMENTS_TRANSMUTATION_TABLET,
+						PELang.ADVANCEMENTS_TRANSMUTATION_TABLET_DESCRIPTION)
+						.addCriterion("trans_tablet", InventoryChangeTrigger.TriggerInstance.hasItems(PEItems.TRANSMUTATION_TABLET))
+						.save(advancementConsumer, PECore.rl("transmutation_tablet"), fileHelper);
+			}
+		}
+
+		// 克莱因之星分支（未禁用，正常生成）
 		Advancement kleinStarEin = childDisplay(root, PEItems.KLEIN_STAR_EIN, PELang.ADVANCEMENTS_KLEIN_STAR, PELang.ADVANCEMENTS_KLEIN_STAR_DESCRIPTION)
 				.addCriterion("klein_star", InventoryChangeTrigger.TriggerInstance.hasItems(PEItems.KLEIN_STAR_EIN))
 				.save(advancementConsumer, PECore.rl("klein_star_ein"), fileHelper);
