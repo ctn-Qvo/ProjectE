@@ -1,24 +1,24 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
-  "key": {
-    "C": {
-      "item": "projecte:alchemical_chest"
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+        "C": {
+            "item": "projecte:alchemical_chest"
+        },
+        "D": {
+            "tag": "forge:gems/diamond"
+        },
+        "B": {
+            "item": "minecraft:bedrock"
+        }
     },
-    "D": {
-      "tag": "forge:gems/diamond"
+    "pattern": [
+        "BDB",
+        "DCD",
+        "BDB"
+    ],
+    "result": {
+        "item": "projecte:condenser_mk1"
     },
-    "O": {
-      "tag": "forge:obsidian"
-    }
-  },
-  "pattern": [
-    "ODO",
-    "DCD",
-    "ODO"
-  ],
-  "result": {
-    "item": "projecte:condenser_mk1"
-  },
-  "show_notification": true
+    "show_notification": true
 }

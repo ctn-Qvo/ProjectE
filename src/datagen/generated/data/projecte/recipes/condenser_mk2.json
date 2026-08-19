@@ -1,24 +1,24 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
-  "key": {
-    "C": {
-      "item": "projecte:condenser_mk1"
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+        "C": {
+            "item": "projecte:condenser_mk1"
+        },
+        "N": {
+            "item": "avaritia:neutron"
+        },
+        "M": {
+            "item": "avaritia:crystal_matrix"
+        }
     },
-    "D": {
-      "item": "projecte:dark_matter_block"
+    "pattern": [
+        "MNM",
+        "NCN",
+        "MNM"
+    ],
+    "result": {
+        "item": "projecte:condenser_mk2"
     },
-    "R": {
-      "item": "projecte:red_matter_block"
-    }
-  },
-  "pattern": [
-    "RDR",
-    "DCD",
-    "RDR"
-  ],
-  "result": {
-    "item": "projecte:condenser_mk2"
-  },
-  "show_notification": true
+    "show_notification": true
 }
