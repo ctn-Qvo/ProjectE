@@ -62,7 +62,6 @@ public class PEItemModelProvider extends ItemModelProvider {
 				.predicate(ClientRegistration.ACTIVE_OVERRIDE, 1)
 				.model(generated("gem_of_eternal_density_on", modLoc("item/dense_gem_on")))
 				.end();
-		//Note: We don't actually have a manual, but I moved this model over to data gen anyways
 		generated("manual", modLoc("item/book"));
 	}
 
@@ -79,6 +78,9 @@ public class PEItemModelProvider extends ItemModelProvider {
 	}
 
 	private void generateChest(BlockRegistryObject<?, ?> block) {
+		if (block == null) {
+			return;
+		}
 		String name = getName(block);
 		withExistingParent(name, modLoc("block/base_chest")).texture("chest", modLoc("block/" + name));
 	}
@@ -248,6 +250,9 @@ public class PEItemModelProvider extends ItemModelProvider {
 
 	private void blockParentModel(BlockRegistryObject<?, ?>... blocks) {
 		for (BlockRegistryObject<?, ?> block : blocks) {
+			if (block == null) {
+				continue;
+			}
 			String name = getName(block);
 			withExistingParent(name, modLoc("block/" + name));
 		}
@@ -259,6 +264,9 @@ public class PEItemModelProvider extends ItemModelProvider {
 
 	protected void registerGenerated(ItemLike... itemProviders) {
 		for (ItemLike itemProvider : itemProviders) {
+			if (itemProvider == null) {
+				continue;
+			}
 			generated(itemProvider);
 		}
 	}
@@ -293,7 +301,6 @@ public class PEItemModelProvider extends ItemModelProvider {
 		TRIM_HELPER.forEachTrim((trimId, itemModelIndex) -> {
 					ItemModelBuilder override = withExistingParent(builder.getLocation().withSuffix("_" + trimId + "_trim").getPath(), "item/generated")
 							.texture("layer0", texture);
-					//Directly add the layer1 to the texture map as the file doesn't actually exist
 					MODEL_TEXTURES.getValue(override).put("layer1", new ResourceLocation(type.getName() + "_trim_" + trimId).withPrefix("trims/items/").toString());
 					builder.override()
 							.predicate(ItemModelGenerators.TRIM_TYPE_PREDICATE_ID, itemModelIndex)

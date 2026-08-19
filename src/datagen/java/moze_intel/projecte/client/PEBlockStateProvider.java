@@ -6,7 +6,6 @@ import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.utils.RegistryUtils;
 import net.minecraft.core.Direction;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
@@ -29,7 +28,6 @@ public class PEBlockStateProvider extends BlockStateProvider {
 
 	@Override
 	protected void registerStatesAndModels() {
-		//TODO: Should we use simpleBlockItem here instead of blockParentModel in the item model provider
 		simpleBlocks(PEBlocks.ALCHEMICAL_COAL, PEBlocks.MOBIUS_FUEL, PEBlocks.AETERNALIS_FUEL, PEBlocks.DARK_MATTER, PEBlocks.RED_MATTER);
 		registerTieredOrientable("collectors", PEBlocks.COLLECTOR, PEBlocks.COLLECTOR_MK2, PEBlocks.COLLECTOR_MK3);
 		registerTieredOrientable("relays", PEBlocks.RELAY, PEBlocks.RELAY_MK2, PEBlocks.RELAY_MK3);
@@ -39,7 +37,9 @@ public class PEBlockStateProvider extends BlockStateProvider {
 		registerExplosives();
 		registerInterdictionTorch();
 		registerPedestal();
-		registerTransmutationTable();
+		if (PEBlocks.TRANSMUTATION_TABLE != null) {
+			registerTransmutationTable();
+		}
 	}
 
 	private void registerChests() {
@@ -83,6 +83,9 @@ public class PEBlockStateProvider extends BlockStateProvider {
 	}
 
 	private void particleOnly(BlockRegistryObject<?, ?> block) {
+		if (block == null) {
+			return;
+		}
 		String name = getName(block);
 		simpleBlock(block.getBlock(), models().getBuilder(name).texture("particle", modLoc("block/" + name)));
 	}
@@ -128,6 +131,9 @@ public class PEBlockStateProvider extends BlockStateProvider {
 	}
 
 	private void registerTransmutationTable() {
+		if (PEBlocks.TRANSMUTATION_TABLE == null) {
+			return;
+		}
 		ResourceLocation top = modLoc("block/transmutation_stone/top");
 		BlockModelBuilder model = models()
 				.withExistingParent(getName(PEBlocks.TRANSMUTATION_TABLE), "block/block")
@@ -165,6 +171,9 @@ public class PEBlockStateProvider extends BlockStateProvider {
 	}
 
 	private void registerFurnace(BlockRegistryObject<?, ?> furnace, String prefix, String sideTexture) {
+		if (furnace == null) {
+			return;
+		}
 		String name = getName(furnace);
 		ResourceLocation side = modLoc("block/" + sideTexture);
 		BlockModelBuilder offModel = models().orientable(name, side, modLoc("block/matter_furnace/" + prefix + "_off"), side);
@@ -175,6 +184,9 @@ public class PEBlockStateProvider extends BlockStateProvider {
 	}
 
 	private void registerTieredOrientable(String type, BlockRegistryObject<?, ?> base, BlockRegistryObject<?, ?> mk2, BlockRegistryObject<?, ?> mk3) {
+		if (base == null || mk2 == null || mk3 == null) {
+			return;
+		}
 		ResourceLocation side = modLoc("block/" + type + "/other");
 		BlockModelBuilder model = models().orientableWithBottom(getName(base), side, modLoc("block/" + type + "/front"), side,
 				modLoc("block/" + type + "/top_1"));
@@ -189,7 +201,9 @@ public class PEBlockStateProvider extends BlockStateProvider {
 
 	private void simpleBlocks(BlockRegistryObject<?, ?>... blocks) {
 		for (BlockRegistryObject<?, ?> block : blocks) {
-			simpleBlock(block.getBlock());
+			if (block != null) {
+				simpleBlock(block.getBlock());
+			}
 		}
 	}
 
